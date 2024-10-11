@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<launch>
+<arg name="gui" value="false"/>
+<node name="map_server" pkg="map_server" type="map_server" args="$(find multi_robot_scenario)/maps/map.yaml">
+<param name="frame_id" value="map"/>
+</node>
+<node pkg="tf" type="static_transform_publisher" name="map_broadcaster1"
+      args="0 0 0 0 0 0 map r1/odom 100"/>
+<node pkg="tf" type="static_transform_publisher" name="map_broadcaster2"
+      args="0 0 0 0 0 0 map r2/odom 100"/>
+<node pkg="tf" type="static_transform_publisher" name="map_broadcaster3"
+      args="0 0 0 0 0 0 map r3/odom 100"/>
+
+
+<!--<param name="robot_description" command="$(find xacro)/xacro '$(find multi_robot_scenario)/xacro/p3dx/pioneer3dx.xacro'" />-->
+   <!-- Gazebo  -->
+  <include file="$(find multi_robot_scenario)/launch/empty_world.launch" />
+
+  <!-- Robot with diff drive -->
+ <group ns="r1">
+  <param name="tf_prefix" value="r1"/>
+  <include file="$(find multi_robot_scenario)/launch/pioneer3dx.gazebo.launch">
+     <arg name="robot_name" value="r1" />
+     <arg name="robot_position" value="-x 0.0 -y 0.0 -z 0.01 -R 0 -P 0 -Y +0.0" />
+   </include>
+   </group> 
+   <group ns="r2">
+  <param name="tf_prefix" value="r2"/>
+   <include file="$(find multi_robot_scenario)/launch/pioneer3dx.gazebo.launch">
+     <arg name="robot_name" value="r2" />
+     <arg name="robot_position" value="-x 2.36 -y -1.15 -z 0.01 -R 0 -P 0 -Y 3.12" />
+   </include>
+   </group>
+    <group ns="r3">
+  <param name="tf_prefix" value="r3"/>
+   <include file="$(find multi_robot_scenario)/launch/pioneer3dx.gazebo.launch">
+     <arg name="robot_name" value="r3" />
+     <arg name="robot_position" value="-x 2.26 -y 0.958 -z 0.01 -R 0 -P 0 -Y 3.12" />
+   </include>
+   </group>
+  
+  <!-- RVIZ -->
+ <node pkg="rviz" type="rviz" name="rviz" args="-d $(find multi_robot_scenario)/launch/pioneer3dx_r1r2.rviz" />
+ 
+  <!--<node pkg="rviz" type="rviz" name="rviz" required="true"/>-->
+</launch>
